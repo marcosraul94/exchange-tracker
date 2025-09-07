@@ -7,7 +7,8 @@ const run = async () => {
 
   await page.goto("https://www.scrapethissite.com/pages/simple/");
 
-  await page.screenshot({ path: "screenshot.png" });
+  const title = await page.title();
+  console.log(`Page title: ${title}`);
 
   await context.close();
   await browser.close();
