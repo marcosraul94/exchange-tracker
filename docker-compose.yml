@@ -1,0 +1,12 @@
+services:
+  scraper:
+    build:
+      context: ./backend/scraper
+    container_name: scraper
+    entrypoint: /bin/sh
+    volumes:
+      - ./backend/scraper:/var/task/
+    environment:
+      - NODE_ENV=dev
+    stdin_open: true
+    tty: true
