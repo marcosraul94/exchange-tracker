@@ -6,6 +6,8 @@ services:
     entrypoint: /bin/sh
     volumes:
       - ./backend/scraper:/var/task/
+    env_file:
+      - .env
     environment:
       - NODE_ENV=dev
     stdin_open: true
