@@ -2,11 +2,16 @@ name: Pull Request Checks
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   validate-infra:
     name: Validate infrastructure
-    uses: ./.github/workflows/templates/validate-infra.yml
+    environment: dev
+    uses: ./.github/workflows/validate-infra.yml
     with:
       ENVIRONMENT: "dev"
     secrets:
