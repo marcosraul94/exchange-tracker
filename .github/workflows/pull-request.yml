@@ -6,6 +6,7 @@ on:
 jobs:
   validate-infra:
     name: Validate infrastructure
+    environment: dev
     uses: ./.github/workflows/validate-infra.yml
     with:
       ENVIRONMENT: "dev"
