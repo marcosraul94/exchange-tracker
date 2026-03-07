@@ -18,4 +18,4 @@ COPY src ./src
 RUN npx tsc
 
 ENTRYPOINT ["npx", "aws-lambda-ric"]
-CMD ["index.handler"]
+CMD ["./dist/index.handler"]
