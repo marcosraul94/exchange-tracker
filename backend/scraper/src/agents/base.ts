@@ -1,13 +1,15 @@
 import { chromium, devices, Page } from "playwright";
 import { ExchangeRate, ScrapeResult } from "../types";
 import { Currency } from "../enums";
+import { Logger } from "pino";
 
 export abstract class Agent {
   private readonly device: string = "iPhone 14";
-  private url: string;
+  protected abstract readonly url: string;
+  protected abstract readonly currencies: Currency[];
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(protected logger: Logger) {
+    this.logger = logger;
   }
 
   protected async openPage() {
@@ -22,20 +24,36 @@ export abstract class Agent {
   protected abstract scrapeEUR(page: Page): Promise<ExchangeRate | undefined>;
 
   async scrape(): Promise<ScrapeResult> {
+    if (this.currencies.length === 0) {
+      throw new Error("No currencies to scrape");
+    }
+
+    this.logger.info("Opening page");
     const { page, browser, context } = await this.openPage();
 
     try {
+      this.logger.info("Navigating to URL");
       await page.goto(this.url);
 
       const result: ScrapeResult = {};
-      const usd = await this.scrapeUSD(page);
-      if (usd) result[Currency.USD] = usd;
 
-      const eur = await this.scrapeEUR(page);
-      if (eur) result[Currency.EUR] = eur;
+      if (this.currencies.includes(Currency.USD)) {
+        this.logger.info("Scraping USD");
+        result[Currency.USD] = await this.scrapeUSD(page);
 
+      }
+
+      if (this.currencies.includes(Currency.EUR)) {
+        this.logger.info("Scraping EUR");
+        result[Currency.EUR] = await this.scrapeEUR(page);
+      }
+
+      this.logger.info({ msg: "Scraping completed", result });
+      
       return result;
     } finally {
+      this.logger.info("Closing browser");
+      
       await page.close();
       await context.close();
       await browser.close();

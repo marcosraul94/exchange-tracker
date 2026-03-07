@@ -1,9 +1,13 @@
 import { AgentFactory } from "./factory";
 import { Event } from "./types";
+import { logger as baseLogger } from "./logger";
 
 export const handler = async (event: Event) => {
-  const { bank } = event;
-  const agent = AgentFactory.create(bank);
+  const { bank, id } = event;
+  const logger = baseLogger.child({ bank, eventId: id});
+
+  const agent = AgentFactory.create(bank, logger);
   const result = await agent.scrape();
+  
   return result;
 };

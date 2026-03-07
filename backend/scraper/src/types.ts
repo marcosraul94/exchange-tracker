@@ -11,5 +11,6 @@ export type ScrapeResult = {
 };
 
 export type Event = {
+  id: string;
   bank: Bank;
 };

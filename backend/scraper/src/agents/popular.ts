@@ -1,17 +1,13 @@
 import { Page } from "playwright";
 import { ExchangeRate } from "../types";
 import { Agent } from "./base";
-import { BankUrl } from "../enums";
+import { BankUrl, Currency } from "../enums";
 
 export class PopularAgent extends Agent {
-  constructor(url: string = BankUrl.POPULAR) {
-    super(url);
-  }
+  protected readonly url = BankUrl.POPULAR;
+  protected readonly currencies = [Currency.USD, Currency.EUR];
 
   async scrapeUSD(page: Page): Promise<ExchangeRate | undefined> {
-    const title = await page.title();
-    console.log(`Page title: ${title}`);
-
     return { buy: 1, sell: 1 };
   }
 

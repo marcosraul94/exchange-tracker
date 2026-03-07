@@ -1,5 +1,6 @@
 import { AgentFactory } from "../factory";
 import { Bank } from "../enums";
+import { logger as baseLogger } from "../logger";
 
 const bank = process.argv[2] as Bank;
 if (!bank) {
@@ -7,5 +8,7 @@ if (!bank) {
   process.exit(1);
 }
 
-const agent = AgentFactory.create(bank);
-agent.scrape().then(console.log).catch(console.error);
+const logger = baseLogger.child({ bank, mode: "script" });
+const agent = AgentFactory.create(bank, logger);
+
+agent.scrape();
