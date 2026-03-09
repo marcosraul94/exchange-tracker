@@ -1,7 +1,6 @@
 import {
   CreateTableCommand,
   DeleteTableCommand,
-  DescribeTableCommand,
   DynamoDBClient,
   ResourceInUseException,
   ResourceNotFoundException,
