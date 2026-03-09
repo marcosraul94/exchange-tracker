@@ -1,7 +1,6 @@
 import { Page } from "playwright";
-import { ExchangeRate } from "../types";
+import { ExchangeRate, BankUrl, Currency } from "@repo/lib";
 import { Agent } from "./base";
-import { BankUrl, Currency } from "../enums";
 
 export class PopularAgent extends Agent {
   protected readonly url = BankUrl.POPULAR;

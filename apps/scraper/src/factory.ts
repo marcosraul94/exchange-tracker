@@ -1,4 +1,4 @@
-import { Bank } from "./enums";
+import { Bank } from "@repo/lib";
 import { Agent } from "./agents/base";
 import { PopularAgent } from "./agents/popular";
 import { Logger } from "pino";

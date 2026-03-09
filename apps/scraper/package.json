@@ -1,5 +1,5 @@
 {
-  "name": "scraper",
+  "name": "@repo/scraper",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,17 +11,12 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {
-    "@types/node": "^24.3.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
-  },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1004.0",
-    "@aws-sdk/lib-dynamodb": "^3.1004.0",
+    "@repo/lib": "*",
     "@playwright/browser-chromium": "^1.55.0",
     "aws-lambda-ric": "^2.0.0",
     "pino": "^10.3.1",
     "playwright": "^1.55.0"
-  }
+  },
+  "devDependencies": {}
 }

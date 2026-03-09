@@ -7,13 +7,15 @@ services:
 
   scraper:
     build:
-      context: ./backend/scraper
+      context: .
+      dockerfile: ./apps/scraper/Dockerfile
     container_name: scraper
     entrypoint: /bin/sh
     depends_on:
       - dynamodb
     volumes:
-      - ./backend/scraper:/var/task/
+      - ./apps/scraper:/var/task/apps/scraper
+      - ./lib:/var/task/lib
     env_file:
       - .env
     environment:

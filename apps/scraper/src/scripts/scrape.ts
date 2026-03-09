@@ -1,5 +1,5 @@
 import { AgentFactory } from "../factory";
-import { Bank } from "../enums";
+import { Bank } from "@repo/lib";
 import { logger as baseLogger } from "../logger";
 
 const bank = process.argv[2] as Bank;

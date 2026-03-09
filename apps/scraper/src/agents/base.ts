@@ -1,6 +1,5 @@
 import { chromium, devices, Page } from "playwright";
-import { ExchangeRate, ScrapeResult } from "../types";
-import { Currency } from "../enums";
+import { ExchangeRate, ScrapeResult, Currency } from "@repo/lib";
 import { Logger } from "pino";
 
 export abstract class Agent {

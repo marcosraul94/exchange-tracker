@@ -1,5 +1,5 @@
 import { AgentFactory } from "./factory";
-import { Event } from "./types";
+import { Event } from "@repo/lib";
 import { logger as baseLogger } from "./logger";
 
 export const handler = async (event: Event) => {
