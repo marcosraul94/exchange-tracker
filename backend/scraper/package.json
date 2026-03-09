@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "scrape": "ts-node src/scripts/scrape.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "ts-node src/scripts/setup-dynamo.ts",
+    "test": "node --require ts-node/register --test src/**/*.test.ts"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1004.0",
+    "@aws-sdk/lib-dynamodb": "^3.1004.0",
     "@playwright/browser-chromium": "^1.55.0",
     "aws-lambda-ric": "^2.0.0",
     "pino": "^10.3.1",

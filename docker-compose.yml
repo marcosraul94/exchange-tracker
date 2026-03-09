@@ -1,14 +1,23 @@
 services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+
   scraper:
     build:
       context: ./backend/scraper
     container_name: scraper
     entrypoint: /bin/sh
+    depends_on:
+      - dynamodb
     volumes:
       - ./backend/scraper:/var/task/
     env_file:
       - .env
     environment:
       - NODE_ENV=dev
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
     stdin_open: true
     tty: true

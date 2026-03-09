@@ -5,6 +5,13 @@ export type ExchangeRate = {
   sell: number;
 };
 
+export type BankExchangeRate = {
+  bank_id: Bank;
+  currency: Currency;
+  rate: ExchangeRate;
+  createdAt: Date;
+};
+
 export type ScrapeResult = {
   [Currency.USD]?: ExchangeRate;
   [Currency.EUR]?: ExchangeRate;
