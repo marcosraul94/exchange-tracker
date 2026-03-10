@@ -1,10 +1,9 @@
 import { AgentFactory } from "./factory";
-import { Event } from "@repo/lib";
+import { ScrapeBankEvent } from "./types";
 import { logger as baseLogger } from "./logger";
 
-export const handler = async (event: Event) => {
-  const { bank, id } = event;
-  const logger = baseLogger.child({ bank, eventId: id});
+export const handler = async ({ bankId: bank, id: eventId }: ScrapeBankEvent) => {
+  const logger = baseLogger.child({ bank, eventId });
 
   const agent = AgentFactory.create(bank, logger);
   const result = await agent.scrape();

@@ -5,7 +5,6 @@
   "scripts": {
     "build": "tsc",
     "scrape": "ts-node src/scripts/scrape.ts",
-    "setup": "ts-node src/scripts/setup-dynamo.ts",
     "test": "node --require ts-node/register --test src/**/*.test.ts"
   },
   "author": "",

@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { BankExchangeRateRepository } from "./exchange-rate-repository";
-import { Bank, Currency } from "../enums";
+import { BankExchangeRateRepository } from "./exchange-rate";
+import { BankId, Currency } from "../../enums";
 
 describe("BankExchangeRateRepository", () => {
   const repository = new BankExchangeRateRepository();
@@ -15,7 +15,7 @@ describe("BankExchangeRateRepository", () => {
       const now = new Date();
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.USD,
         rate: { buy: 58.5, sell: 59.0 },
         createdAt: now,
@@ -24,7 +24,7 @@ describe("BankExchangeRateRepository", () => {
       const items = await repository.getAll();
 
       assert.equal(items.length, 1);
-      assert.equal(items[0].bank_id, Bank.POPULAR);
+      assert.equal(items[0].bank_id, BankId.POPULAR);
       assert.equal(items[0].currency, Currency.USD);
       assert.equal(items[0].rate.buy, 58.5);
       assert.equal(items[0].rate.sell, 59.0);
@@ -35,14 +35,14 @@ describe("BankExchangeRateRepository", () => {
       const now = new Date();
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.EUR,
         rate: { buy: 62.0, sell: 63.5 },
         createdAt: now,
       });
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.EUR,
         rate: { buy: 62.5, sell: 64.0 },
         createdAt: now,
@@ -67,14 +67,14 @@ describe("BankExchangeRateRepository", () => {
       const now = new Date();
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.USD,
         rate: { buy: 58.5, sell: 59.0 },
         createdAt: now,
       });
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.EUR,
         rate: { buy: 62.0, sell: 63.5 },
         createdAt: now,
@@ -89,7 +89,7 @@ describe("BankExchangeRateRepository", () => {
       const now = new Date();
 
       await repository.save({
-        bank_id: Bank.POPULAR,
+        bank_id: BankId.POPULAR,
         currency: Currency.USD,
         rate: { buy: 58.5, sell: 59.0 },
         createdAt: now,
@@ -98,7 +98,7 @@ describe("BankExchangeRateRepository", () => {
       const items = await repository.getAll();
       const item = items[0];
 
-      assert.equal(item.bank_id, Bank.POPULAR);
+      assert.equal(item.bank_id, BankId.POPULAR);
       assert.equal(item.currency, Currency.USD);
       assert.deepEqual(item.rate, { buy: 58.5, sell: 59.0 });
       assert.ok(item.createdAt instanceof Date);

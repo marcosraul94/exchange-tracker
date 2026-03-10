@@ -1,9 +1,9 @@
 import { Page } from "playwright";
-import { ExchangeRate, BankUrl, Currency } from "@repo/lib";
+import { ExchangeRate, BankId, Currency } from "@repo/lib";
 import { Agent } from "./base";
 
 export class PopularAgent extends Agent {
-  protected readonly url = BankUrl.POPULAR;
+  protected readonly bankId = BankId.POPULAR;
   protected readonly currencies = [Currency.USD, Currency.EUR];
 
   async scrapeUSD(page: Page): Promise<ExchangeRate | undefined> {

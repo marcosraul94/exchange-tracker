@@ -1,8 +1,8 @@
 import { AgentFactory } from "../factory";
-import { Bank } from "@repo/lib";
+import { BankId } from "@repo/lib";
 import { logger as baseLogger } from "../logger";
 
-const bank = process.argv[2] as Bank;
+const bank = process.argv[2] as BankId;
 if (!bank) {
   console.error(`Usage: npm run scrape -- <bank>`);
   process.exit(1);

@@ -4,10 +4,6 @@ export enum Currency {
   DOP = "DOP",
 }
 
-export enum Bank {
+export enum BankId {
   POPULAR = "popular",
-}
-
-export enum BankUrl {
-  POPULAR = "https://popularenlinea.com/personas/Paginas/Home.aspx",
 }

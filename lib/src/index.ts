@@ -1,9 +1,5 @@
-export { Currency, Bank, BankUrl } from "./enums";
-export {
-  ExchangeRate,
-  BankExchangeRate,
-  ScrapeResult,
-  Event,
-} from "./types";
+export { Currency, BankId } from "./enums";
+export { Bank, ExchangeRate, BankExchangeRate } from "./types";
 export { DynamoClient, dynamoClient } from "./db/client";
-export { BankExchangeRateRepository } from "./db/exchange-rate-repository";
+export { BankExchangeRateRepository } from "./db/repository/exchange-rate";
+export { BankRepository } from "./db/repository/bank";

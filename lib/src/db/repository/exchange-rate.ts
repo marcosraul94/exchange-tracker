@@ -1,7 +1,7 @@
 import { BatchWriteCommand, PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { dynamoClient } from "./client";
-import { BankExchangeRate } from "../types";
-import { Bank, Currency } from "../enums";
+import { dynamoClient } from "../client";
+import { BankExchangeRate } from "../../types";
+import { BankId, Currency } from "../../enums";
 
 const TABLE_NAME = "exchange-tracker";
 
@@ -36,7 +36,7 @@ export class BankExchangeRateRepository {
     );
 
     return (result.Items || []).map((item) => ({
-      bank_id: item.bank_id as Bank,
+      bank_id: item.bank_id as BankId,
       currency: item.currency as Currency,
       rate: { buy: item.buy as number, sell: item.sell as number },
       createdAt: new Date(item.created_at as string),
