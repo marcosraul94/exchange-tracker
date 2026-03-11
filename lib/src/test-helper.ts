@@ -4,28 +4,27 @@ import { BankRepository } from "./repositories/bank";
 import { BankExchangeRateRepository } from "./repositories/exchange-rate";
 
 export class TestHelper {
-  readonly tableName: string;
   readonly bankRepo: BankRepository;
   readonly bankExchangeRateRepo: BankExchangeRateRepository;
 
   private readonly client: DynamoClient;
 
   constructor() {
-    this.tableName = `test-${randomUUID()}`;
-    this.client = new DynamoClient();
+    const tableName = `test-${randomUUID()}`;
+    this.client = new DynamoClient(tableName);
 
-    this.bankRepo = new BankRepository(this.tableName, this.client.docClient);
+    this.bankRepo = new BankRepository(tableName, this.client.docClient);
     this.bankExchangeRateRepo = new BankExchangeRateRepository(
-      this.tableName,
+      tableName,
       this.client.docClient,
     );
   }
 
   async setup() {
-    await this.client.createTable(this.tableName);
+    await this.client.createTable();
   }
 
   async cleanup() {
-    await this.client.deleteTable(this.tableName);
+    await this.client.deleteTable();
   }
 }

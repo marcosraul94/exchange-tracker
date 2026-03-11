@@ -10,14 +10,14 @@ import {
   DynamoDBDocumentClient,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
-
-const DEFAULT_TABLE_NAME = "exchange-tracker";
+import { Table } from "./enums";
 
 export class DynamoClient {
   private readonly client: DynamoDBClient;
+  private readonly tableName: string;
   public readonly docClient: DynamoDBDocumentClient;
 
-  constructor() {
+  constructor(tableName: string = Table.EXCHANGE_TRACKER) {
     this.client = new DynamoDBClient({
       region: process.env.AWS_REGION || "us-east-1",
       ...(process.env.DYNAMODB_ENDPOINT && {
@@ -25,13 +25,14 @@ export class DynamoClient {
       }),
     });
     this.docClient = DynamoDBDocumentClient.from(this.client);
+    this.tableName = tableName;
   }
 
-  async createTable(tableName: string = DEFAULT_TABLE_NAME) {
+  async createTable() {
     try {
       await this.client.send(
         new CreateTableCommand({
-          TableName: tableName,
+          TableName: this.tableName,
           KeySchema: [
             { AttributeName: "PK", KeyType: "HASH" },
             { AttributeName: "SK", KeyType: "RANGE" },
@@ -41,7 +42,7 @@ export class DynamoClient {
             { AttributeName: "SK", AttributeType: "S" },
           ],
           BillingMode: "PAY_PER_REQUEST",
-        })
+        }),
       );
     } catch (error) {
       if (error instanceof ResourceInUseException) return;
@@ -49,43 +50,14 @@ export class DynamoClient {
     }
   }
 
-  async deleteTable(tableName: string = DEFAULT_TABLE_NAME) {
+  async deleteTable() {
     try {
       await this.client.send(
-        new DeleteTableCommand({ TableName: tableName })
+        new DeleteTableCommand({ TableName: this.tableName }),
       );
     } catch (error) {
       if (error instanceof ResourceNotFoundException) return;
       throw error;
-    }
-  }
-
-  async deleteAllItems(tableName: string = DEFAULT_TABLE_NAME) {
-    const result = await this.docClient.send(
-      new ScanCommand({
-        TableName: tableName,
-        ProjectionExpression: "PK, SK",
-      })
-    );
-
-    const items = result.Items || [];
-    if (items.length === 0) return;
-
-    const batches = [];
-    for (let i = 0; i < items.length; i += 25) {
-      batches.push(items.slice(i, i + 25));
-    }
-
-    for (const batch of batches) {
-      await this.docClient.send(
-        new BatchWriteCommand({
-          RequestItems: {
-            [tableName]: batch.map((item) => ({
-              DeleteRequest: { Key: { PK: item.PK, SK: item.SK } },
-            })),
-          },
-        })
-      );
     }
   }
 }
