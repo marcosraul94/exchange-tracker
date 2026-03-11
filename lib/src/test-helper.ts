@@ -10,27 +10,28 @@ export class TestHelper {
   readonly migrationRepo: MigrationRepository;
 
   private readonly client: DynamoClient;
+  private readonly tableName: string;
 
   constructor() {
-    const tableName = `test-${randomUUID()}`;
-    this.client = new DynamoClient(tableName);
+    this.tableName = `test-${randomUUID()}`;
+    this.client = new DynamoClient();
 
-    this.bankRepo = new BankRepository(tableName, this.client.docClient);
+    this.bankRepo = new BankRepository(this.tableName, this.client.docClient);
     this.bankExchangeRateRepo = new BankExchangeRateRepository(
-      tableName,
+      this.tableName,
       this.client.docClient,
     );
     this.migrationRepo = new MigrationRepository(
-      tableName,
+      this.tableName,
       this.client.docClient,
     );
   }
 
   async setup() {
-    await this.client.createTable();
+    await this.client.createTable(this.tableName);
   }
 
   async cleanup() {
-    await this.client.deleteTable();
+    await this.client.deleteTable(this.tableName);
   }
 }

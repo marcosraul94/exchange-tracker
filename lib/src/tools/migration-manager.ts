@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { MigrationRepository } from "../repositories/migration";
 import { DynamoClient } from "../client";
-import { Table } from "../enums";
 
 interface MigrationModule {
   up: (client: DynamoClient) => Promise<void>;
@@ -19,7 +18,7 @@ export class MigrationManager {
     this.migrationsFolderPath = path.resolve(__dirname, "../migrations");
     this.migrationRepo = new MigrationRepository();
     this.isMigrationsFolderCreated = fs.existsSync(this.migrationsFolderPath);
-    this.dynamoClient = new DynamoClient(Table.MIGRATIONS);
+    this.dynamoClient = new DynamoClient();
   }
 
   private extractIdFromPath(path: string): number {

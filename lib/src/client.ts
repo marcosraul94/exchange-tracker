@@ -7,14 +7,12 @@ import {
   ListTablesCommand,
 } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { Table } from "./enums";
 
 export class DynamoClient {
   private readonly client: DynamoDBClient;
-  private readonly tableName: string;
   public readonly docClient: DynamoDBDocumentClient;
 
-  constructor(tableName: string = Table.EXCHANGE_TRACKER) {
+  constructor() {
     this.client = new DynamoDBClient({
       region: process.env.AWS_REGION || "us-east-1",
       ...(process.env.DYNAMODB_ENDPOINT && {
@@ -22,14 +20,13 @@ export class DynamoClient {
       }),
     });
     this.docClient = DynamoDBDocumentClient.from(this.client);
-    this.tableName = tableName;
   }
 
-  async createTable(tableName: string | undefined = undefined) {
+  async createTable(tableName: string) {
     try {
       await this.client.send(
         new CreateTableCommand({
-          TableName: tableName || this.tableName,
+          TableName: tableName,
           KeySchema: [
             { AttributeName: "PK", KeyType: "HASH" },
             { AttributeName: "SK", KeyType: "RANGE" },
@@ -53,10 +50,10 @@ export class DynamoClient {
     return result.TableNames || [];
   }
 
-  async deleteTable(tableName: string | undefined = undefined) {
+  async deleteTable(tableName: string) {
     try {
       await this.client.send(
-        new DeleteTableCommand({ TableName: tableName || this.tableName }),
+        new DeleteTableCommand({ TableName: tableName }),
       );
     } catch (error) {
       if (error instanceof ResourceNotFoundException) return;
