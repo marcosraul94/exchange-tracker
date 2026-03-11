@@ -1,5 +1,6 @@
 export { Currency, BankId } from "./enums";
 export { Bank, ExchangeRate, BankExchangeRate } from "./types";
-export { DynamoClient, dynamoClient } from "./db/client";
-export { BankExchangeRateRepository } from "./db/repository/exchange-rate";
-export { BankRepository } from "./db/repository/bank";
+export { DynamoClient, dynamoClient } from "./client";
+export { BankExchangeRateRepository } from "./repositories/exchange-rate";
+export { BankRepository } from "./repositories/bank";
+export { TestHelper } from "./test-helper";

@@ -4,20 +4,19 @@ import {
   PutCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { dynamoClient as defaultDynamoClient } from "../client";
-import { CompositeKey, Item, SerializedItem } from "../../types";
-import { Table } from "../../enums";
+import { CompositeKey, Item, SerializedItem } from "../types";
+import { Table } from "../enums";
 
 export type BaseCompositeItem<T extends Item> = Partial<T>;
 
 export abstract class BaseRepository<T extends Item, K extends SerializedItem> {
   protected abstract getCompositeKey(item: BaseCompositeItem<T>): CompositeKey;
-
   protected abstract deserialize(item: K): T;
   protected abstract serialize(item: T): K;
 
   constructor(
+    protected tableName: string = Table.EXCHANGE_TRACKER,
     protected docClient: DynamoDBDocumentClient = defaultDynamoClient.docClient,
-    protected tableName: Table = Table.EXCHANGE_TRACKER,
   ) {
     this.docClient = docClient;
     this.tableName = tableName;

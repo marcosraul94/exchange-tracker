@@ -1,5 +1,5 @@
 import { QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { BankExchangeRate, CompositeKey, SerializedItem } from "../../types";
+import { BankExchangeRate, CompositeKey, SerializedItem } from "../types";
 import { BaseRepository } from "./base";
 
 export type SerializedBankExchangeRate = SerializedItem &

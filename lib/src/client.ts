@@ -11,7 +11,7 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 
-const TABLE_NAME = "exchange-tracker";
+const DEFAULT_TABLE_NAME = "exchange-tracker";
 
 export class DynamoClient {
   private readonly client: DynamoDBClient;
@@ -27,11 +27,11 @@ export class DynamoClient {
     this.docClient = DynamoDBDocumentClient.from(this.client);
   }
 
-  async createTable() {
+  async createTable(tableName: string = DEFAULT_TABLE_NAME) {
     try {
       await this.client.send(
         new CreateTableCommand({
-          TableName: TABLE_NAME,
+          TableName: tableName,
           KeySchema: [
             { AttributeName: "PK", KeyType: "HASH" },
             { AttributeName: "SK", KeyType: "RANGE" },
@@ -49,10 +49,10 @@ export class DynamoClient {
     }
   }
 
-  async deleteTable() {
+  async deleteTable(tableName: string = DEFAULT_TABLE_NAME) {
     try {
       await this.client.send(
-        new DeleteTableCommand({ TableName: TABLE_NAME })
+        new DeleteTableCommand({ TableName: tableName })
       );
     } catch (error) {
       if (error instanceof ResourceNotFoundException) return;
@@ -60,10 +60,10 @@ export class DynamoClient {
     }
   }
 
-  async deleteAllItems() {
+  async deleteAllItems(tableName: string = DEFAULT_TABLE_NAME) {
     const result = await this.docClient.send(
       new ScanCommand({
-        TableName: TABLE_NAME,
+        TableName: tableName,
         ProjectionExpression: "PK, SK",
       })
     );
@@ -80,7 +80,7 @@ export class DynamoClient {
       await this.docClient.send(
         new BatchWriteCommand({
           RequestItems: {
-            [TABLE_NAME]: batch.map((item) => ({
+            [tableName]: batch.map((item) => ({
               DeleteRequest: { Key: { PK: item.PK, SK: item.SK } },
             })),
           },
