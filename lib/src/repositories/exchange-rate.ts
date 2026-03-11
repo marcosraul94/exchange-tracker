@@ -1,12 +1,15 @@
 import { QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { BankExchangeRate, CompositeKey, SerializedItem } from "../types";
+import {
+  BankExchangeRate,
+  CompositeKey,
+  SerializedItem,
+  ExchangeRate,
+} from "../types";
 import { BaseRepository } from "./base";
 
 export type SerializedBankExchangeRate = SerializedItem &
-  Pick<BankExchangeRate, "bankId" | "currency"> & {
-    buy: number;
-    sell: number;
-  };
+  Pick<BankExchangeRate, "bankId" | "currency"> &
+  ExchangeRate;
 
 export type CompositeItem = Pick<
   BankExchangeRate,
