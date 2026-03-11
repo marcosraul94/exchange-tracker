@@ -15,21 +15,21 @@ describe("BankRepository", () => {
   });
 
   beforeEach(async () => {
-    await helper.bankExchangeRateRepo.deleteAll();
+    await helper.bankRepo.deleteAll();
   });
 
   describe("save", () => {
     it("saves a bank", async () => {
       const now = new Date();
 
-      await helper.bankExchangeRateRepo.save({
+      await helper.bankRepo.save({
         id: BankId.POPULAR,
         name: "Banco Popular",
         url: "https://www.popularenlinea.com",
         createdAt: now,
       });
 
-      const bank = await helper.bankExchangeRateRepo.get({ id: BankId.POPULAR });
+      const bank = await helper.bankRepo.get({ id: BankId.POPULAR });
 
       assert.ok(bank);
       assert.equal(bank.id, BankId.POPULAR);
@@ -41,21 +41,21 @@ describe("BankRepository", () => {
     it("overwrites existing bank with same id", async () => {
       const now = new Date();
 
-      await helper.bankExchangeRateRepo.save({
+      await helper.bankRepo.save({
         id: BankId.POPULAR,
         name: "Banco Popular",
         url: "https://old-url.com",
         createdAt: now,
       });
 
-      await helper.bankExchangeRateRepo.save({
+      await helper.bankRepo.save({
         id: BankId.POPULAR,
         name: "Banco Popular Dominicano",
         url: "https://new-url.com",
         createdAt: now,
       });
 
-      const banks = await helper.bankExchangeRateRepo.getAll();
+      const banks = await helper.bankRepo.getAll();
       assert.equal(banks.length, 1);
       assert.equal(banks[0].name, "Banco Popular Dominicano");
       assert.equal(banks[0].url, "https://new-url.com");
@@ -64,7 +64,7 @@ describe("BankRepository", () => {
 
   describe("get", () => {
     it("returns undefined for non-existent bank", async () => {
-      const bank = await helper.bankExchangeRateRepo.get({ id: BankId.POPULAR });
+      const bank = await helper.bankRepo.get({ id: BankId.POPULAR });
 
       assert.equal(bank, undefined);
     });
@@ -72,7 +72,7 @@ describe("BankRepository", () => {
 
   describe("getAll", () => {
     it("returns empty array when no banks exist", async () => {
-      const banks = await helper.bankExchangeRateRepo.getAll();
+      const banks = await helper.bankRepo.getAll();
 
       assert.equal(banks.length, 0);
     });
@@ -80,14 +80,14 @@ describe("BankRepository", () => {
     it("returns all saved banks", async () => {
       const now = new Date();
 
-      await helper.bankExchangeRateRepo.save({
+      await helper.bankRepo.save({
         id: BankId.POPULAR,
         name: "Banco Popular",
         url: "https://www.popularenlinea.com",
         createdAt: now,
       });
 
-      const banks = await helper.bankExchangeRateRepo.getAll();
+      const banks = await helper.bankRepo.getAll();
 
       assert.equal(banks.length, 1);
       assert.equal(banks[0].id, BankId.POPULAR);
@@ -98,16 +98,16 @@ describe("BankRepository", () => {
     it("removes a bank by id", async () => {
       const now = new Date();
 
-      await helper.bankExchangeRateRepo.save({
+      await helper.bankRepo.save({
         id: BankId.POPULAR,
         name: "Banco Popular",
         url: "https://www.popularenlinea.com",
         createdAt: now,
       });
 
-      await helper.bankExchangeRateRepo.delete({ id: BankId.POPULAR });
+      await helper.bankRepo.delete({ id: BankId.POPULAR });
 
-      const bank = await helper.bankExchangeRateRepo.get({ id: BankId.POPULAR });
+      const bank = await helper.bankRepo.get({ id: BankId.POPULAR });
       assert.equal(bank, undefined);
     });
   });
