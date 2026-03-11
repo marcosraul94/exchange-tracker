@@ -7,3 +7,7 @@ export enum Currency {
 export enum BankId {
   POPULAR = "popular",
 }
+
+export enum Table {
+  EXCHANGE_TRACKER = "exchange-tracker",
+}

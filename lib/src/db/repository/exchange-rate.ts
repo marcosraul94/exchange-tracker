@@ -1,72 +1,93 @@
-import { BatchWriteCommand, PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { dynamoClient } from "../client";
-import { BankExchangeRate } from "../../types";
-import { BankId, Currency } from "../../enums";
+import { QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { BankExchangeRate, CompositeKey, SerializedItem } from "../../types";
+import { BaseRepository } from "./base";
 
-const TABLE_NAME = "exchange-tracker";
+export type SerializedBankExchangeRate = SerializedItem &
+  Pick<BankExchangeRate, "bankId" | "currency"> & {
+    buy: number;
+    sell: number;
+  };
 
-export class BankExchangeRateRepository {
-  async save(bankExchangeRate: BankExchangeRate) {
-    const createdAtISO = bankExchangeRate.createdAt.toISOString();
-    const createdAtDate = createdAtISO.split("T")[0];
+export type CompositeItem = Pick<
+  BankExchangeRate,
+  "currency" | "createdAt" | "bankId"
+>;
 
-    await dynamoClient.docClient.send(
-      new PutCommand({
-        TableName: TABLE_NAME,
-        Item: {
-          PK: `RATE#${bankExchangeRate.currency}`,
-          SK: `CREATED_AT#${createdAtDate}#BANK#${bankExchangeRate.bank_id}`,
-          bank_id: bankExchangeRate.bank_id,
-          currency: bankExchangeRate.currency,
-          buy: bankExchangeRate.rate.buy,
-          sell: bankExchangeRate.rate.sell,
-          created_at: createdAtISO,
-        },
-      })
-    );
+export class BankExchangeRateRepository extends BaseRepository<
+  BankExchangeRate,
+  SerializedBankExchangeRate
+> {
+  protected getCompositeKey(bankExchangeRate: CompositeItem): CompositeKey {
+    const createdAtDate = bankExchangeRate.createdAt
+      .toISOString()
+      .split("T")[0];
+    const createdAtRange = `CREATED_AT#${createdAtDate}#`;
+    const currencyRange = `CURRENCY#${bankExchangeRate.currency}#`;
+    const bankRange = `BANK#${bankExchangeRate.bankId}`;
+
+    return { PK: "RATE#", SK: `${createdAtRange}${currencyRange}${bankRange}` };
+  }
+
+  protected deserialize(item: SerializedBankExchangeRate): BankExchangeRate {
+    return {
+      bankId: item.bankId,
+      currency: item.currency,
+      rate: { buy: item.buy, sell: item.sell },
+      createdAt: new Date(item.created_at),
+    };
+  }
+
+  protected serialize(
+    bankExchangeRate: BankExchangeRate,
+  ): SerializedBankExchangeRate {
+    return {
+      ...this.getCompositeKey(bankExchangeRate),
+      bankId: bankExchangeRate.bankId,
+      currency: bankExchangeRate.currency,
+      buy: bankExchangeRate.rate.buy,
+      sell: bankExchangeRate.rate.sell,
+      created_at: bankExchangeRate.createdAt.toISOString(),
+    };
   }
 
   async getAll(): Promise<BankExchangeRate[]> {
-    const result = await dynamoClient.docClient.send(
-      new ScanCommand({
-        TableName: TABLE_NAME,
-        FilterExpression: "begins_with(PK, :pk)",
+    const result = await this.docClient.send(
+      new QueryCommand({
+        TableName: this.tableName,
+        KeyConditionExpression: "PK = :pk",
         ExpressionAttributeValues: { ":pk": "RATE#" },
-      })
+      }),
     );
 
-    return (result.Items || []).map((item) => ({
-      bank_id: item.bank_id as BankId,
-      currency: item.currency as Currency,
-      rate: { buy: item.buy as number, sell: item.sell as number },
-      createdAt: new Date(item.created_at as string),
-    }));
+    return (result.Items || []).map((item) =>
+      this.deserialize(item as SerializedBankExchangeRate),
+    );
   }
 
-  async deleteAll() {
-    const result = await dynamoClient.docClient.send(
-      new ScanCommand({
-        TableName: TABLE_NAME,
-        FilterExpression: "begins_with(PK, :pk)",
-        ExpressionAttributeValues: { ":pk": "RATE#" },
-        ProjectionExpression: "PK, SK",
-      })
+  async get({
+    currency,
+    createdAt,
+    bankId,
+  }: CompositeItem): Promise<BankExchangeRate | undefined> {
+    const { PK, SK } = this.getCompositeKey({ currency, createdAt, bankId });
+    const results = await this.docClient.send(
+      new QueryCommand({
+        TableName: this.tableName,
+        KeyConditionExpression: "PK = :pk AND SK = :sk",
+        ExpressionAttributeValues: { ":pk": PK, ":sk": SK },
+      }),
     );
+    const item = results.Items?.[0] as SerializedBankExchangeRate | undefined;
 
-    const items = result.Items || [];
-    if (items.length === 0) return;
+    return item ? this.deserialize(item) : undefined;
+  }
 
-    const MAX_BATCH_SIZE = 25;
-    for (let i = 0; i < items.length; i += MAX_BATCH_SIZE) {
-      await dynamoClient.docClient.send(
-        new BatchWriteCommand({
-          RequestItems: {
-            [TABLE_NAME]: items.slice(i, i + MAX_BATCH_SIZE).map((item) => ({
-              DeleteRequest: { Key: { PK: item.PK, SK: item.SK } },
-            })),
-          },
-        })
-      );
-    }
+  async delete(partialBankExchangeRates: CompositeItem): Promise<void> {
+    await this.docClient.send(
+      new DeleteCommand({
+        TableName: this.tableName,
+        Key: this.getCompositeKey(partialBankExchangeRates),
+      }),
+    );
   }
 }

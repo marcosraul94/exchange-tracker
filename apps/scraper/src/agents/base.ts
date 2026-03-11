@@ -36,7 +36,7 @@ export abstract class Agent {
       throw new Error("No currencies to scrape");
     }
 
-    const bank = await this.bankRepo.getByBankId(this.bankId);
+    const bank = await this.bankRepo.get({ id: this.bankId });
     if (!bank) {
       throw new Error(`Bank ${this.bankId} not found in database`);
     }
@@ -76,7 +76,7 @@ export abstract class Agent {
     if (result[Currency.USD]) {
       this.logger.info("Saving USD");
       await this.exchangeRateRepo.save({
-        bank_id: this.bankId,
+        bankId: this.bankId,
         currency: Currency.USD,
         rate: result[Currency.USD],
         createdAt: new Date(),
@@ -86,7 +86,7 @@ export abstract class Agent {
     if (result[Currency.EUR]) {
       this.logger.info("Saving EUR");
       await this.exchangeRateRepo.save({
-        bank_id: this.bankId,
+        bankId: this.bankId,
         currency: Currency.EUR,
         rate: result[Currency.EUR],
         createdAt: new Date(),

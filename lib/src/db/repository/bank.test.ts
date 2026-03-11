@@ -21,7 +21,7 @@ describe("BankRepository", () => {
         createdAt: now,
       });
 
-      const bank = await repository.getByBankId(BankId.POPULAR);
+      const bank = await repository.get({ id: BankId.POPULAR });
 
       assert.ok(bank);
       assert.equal(bank.id, BankId.POPULAR);
@@ -54,9 +54,9 @@ describe("BankRepository", () => {
     });
   });
 
-  describe("getByBankId", () => {
+  describe("get", () => {
     it("returns undefined for non-existent bank", async () => {
-      const bank = await repository.getByBankId(BankId.POPULAR);
+      const bank = await repository.get({ id: BankId.POPULAR });
 
       assert.equal(bank, undefined);
     });
@@ -97,9 +97,9 @@ describe("BankRepository", () => {
         createdAt: now,
       });
 
-      await repository.delete(BankId.POPULAR);
+      await repository.delete({ id: BankId.POPULAR });
 
-      const bank = await repository.getByBankId(BankId.POPULAR);
+      const bank = await repository.get({ id: BankId.POPULAR });
       assert.equal(bank, undefined);
     });
   });

@@ -13,8 +13,21 @@ export type Bank = {
 };
 
 export type BankExchangeRate = {
-  bank_id: BankId;
+  bankId: BankId;
   currency: Currency;
   rate: ExchangeRate;
   createdAt: Date;
+};
+
+export type Item = {
+  createdAt: Date;
+};
+
+export type CompositeKey = {
+  PK: string;
+  SK: string;
+};
+
+export type SerializedItem = CompositeKey & {
+  created_at: string;
 };
