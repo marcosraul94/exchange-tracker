@@ -10,4 +10,5 @@ export enum BankId {
 
 export enum Table {
   EXCHANGE_TRACKER = "exchange-tracker",
+  MIGRATIONS = "migrations",
 }

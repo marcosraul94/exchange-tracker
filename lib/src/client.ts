@@ -4,12 +4,9 @@ import {
   DynamoDBClient,
   ResourceInUseException,
   ResourceNotFoundException,
+  ListTablesCommand,
 } from "@aws-sdk/client-dynamodb";
-import {
-  BatchWriteCommand,
-  DynamoDBDocumentClient,
-  ScanCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { Table } from "./enums";
 
 export class DynamoClient {
@@ -28,11 +25,11 @@ export class DynamoClient {
     this.tableName = tableName;
   }
 
-  async createTable() {
+  async createTable(tableName: string | undefined = undefined) {
     try {
       await this.client.send(
         new CreateTableCommand({
-          TableName: this.tableName,
+          TableName: tableName || this.tableName,
           KeySchema: [
             { AttributeName: "PK", KeyType: "HASH" },
             { AttributeName: "SK", KeyType: "RANGE" },
@@ -50,10 +47,16 @@ export class DynamoClient {
     }
   }
 
-  async deleteTable() {
+  async listTables() {
+    const result = await this.client.send(new ListTablesCommand({}));
+
+    return result.TableNames || [];
+  }
+
+  async deleteTable(tableName: string | undefined = undefined) {
     try {
       await this.client.send(
-        new DeleteTableCommand({ TableName: this.tableName }),
+        new DeleteTableCommand({ TableName: tableName || this.tableName }),
       );
     } catch (error) {
       if (error instanceof ResourceNotFoundException) return;

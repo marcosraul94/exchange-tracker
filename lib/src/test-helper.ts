@@ -2,10 +2,12 @@ import { randomUUID } from "node:crypto";
 import { DynamoClient } from "./client";
 import { BankRepository } from "./repositories/bank";
 import { BankExchangeRateRepository } from "./repositories/exchange-rate";
+import { MigrationRepository } from "./repositories/migration";
 
 export class TestHelper {
   readonly bankRepo: BankRepository;
   readonly bankExchangeRateRepo: BankExchangeRateRepository;
+  readonly migrationRepo: MigrationRepository;
 
   private readonly client: DynamoClient;
 
@@ -15,6 +17,10 @@ export class TestHelper {
 
     this.bankRepo = new BankRepository(tableName, this.client.docClient);
     this.bankExchangeRateRepo = new BankExchangeRateRepository(
+      tableName,
+      this.client.docClient,
+    );
+    this.migrationRepo = new MigrationRepository(
       tableName,
       this.client.docClient,
     );

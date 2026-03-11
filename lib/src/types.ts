@@ -19,6 +19,12 @@ export type BankExchangeRate = {
   createdAt: Date;
 };
 
+export type Migration = {
+  id: number;
+  path: string;
+  createdAt: Date;
+};
+
 export type Item = {
   createdAt: Date;
 };
