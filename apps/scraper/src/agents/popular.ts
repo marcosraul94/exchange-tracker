@@ -7,10 +7,28 @@ export class PopularAgent extends Agent {
   protected readonly currencies = [Currency.USD, Currency.EUR];
 
   async scrapeUSD(page: Page): Promise<ExchangeRate | undefined> {
-    return { buy: 1, sell: 1 };
+    await page.getByText("CALCULADORAS").click();
+    await page.getByText("Divisas").click();
+    await page.getByText(/\$ Dolar/).click();
+    
+    const buyInput = await page.waitForSelector("#compra_peso_dolar_modal");
+    const buy = parseFloat(await buyInput.inputValue());
+    
+    const sellInput = await page.waitForSelector("#venta_peso_dolar_modal");
+    const sell = parseFloat(await sellInput.inputValue());
+    
+    return { buy, sell };
   }
 
   async scrapeEUR(page: Page): Promise<ExchangeRate | undefined> {
-    return { buy: 1, sell: 1 };
+    await page.getByText(/€ Euro/).click();
+
+    const buyInput = await page.waitForSelector("#compra_peso_euro_modal");
+    const buy = parseFloat(await buyInput.inputValue());
+    
+    const sellInput = await page.waitForSelector("#venta_peso_euro_modal");
+    const sell = parseFloat(await sellInput.inputValue());
+    
+    return { buy, sell };
   }
 }

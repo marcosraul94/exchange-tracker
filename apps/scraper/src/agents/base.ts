@@ -10,7 +10,7 @@ import { ScrapeResult } from "../types";
 import { Logger } from "pino";
 
 export abstract class Agent {
-  private readonly device: string = "iPhone 14";
+  private readonly device: string = "Desktop Chrome";
   protected abstract readonly bankId: BankId;
   protected abstract readonly currencies: Currency[];
 
