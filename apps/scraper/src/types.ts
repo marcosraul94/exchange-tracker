@@ -1,9 +1,4 @@
-import { BankId, Currency, ExchangeRate } from "@repo/lib";
-
-export type ScrapeBankEvent = {
-  id: string;
-  bankId: BankId;
-};
+import { Currency, ExchangeRate } from "@repo/lib";
 
 export type ScrapeResult = {
   [Currency.USD]?: ExchangeRate;

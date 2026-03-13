@@ -1,0 +1,19 @@
+{
+  "name": "@repo/scheduler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.handler",
+    "test": "node --experimental-test-module-mocks --import tsx --test src/**/*.test.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.1004.0",
+    "@repo/lib": "*",
+    "aws-lambda-ric": "^2.0.0"
+  },
+  "devDependencies": {}
+}

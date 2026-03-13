@@ -1,0 +1,19 @@
+{
+  "name": "@repo/lib",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --import tsx --test src/**/*.test.ts",
+    "setup:tables": "tsx src/scripts/setup.ts",
+    "migrate": "npm run setup:tables && tsx src/scripts/migrate.ts",
+    "migrate:revert-last": "npm run setup:tables && tsx src/scripts/migrate-revert-last.ts",
+    "migrate:create": "npm run setup:tables && tsx src/scripts/migrate-create.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1004.0",
+    "@aws-sdk/lib-dynamodb": "^3.1004.0"
+  },
+  "devDependencies": {}
+}

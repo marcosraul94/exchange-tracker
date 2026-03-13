@@ -2,16 +2,16 @@
   "name": "exchange-tracker",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "lib"
+    "apps/*"
   ],
   "scripts": {
     "build:lib": "npm run build -w @repo/lib",
-    "build:scraper": "npm run build:lib && npm run build -w @repo/scraper"
+    "build:scraper": "npm run build:lib && npm run build -w @repo/scraper",
+    "build:scheduler": "npm run build:lib && npm run build -w @repo/scheduler"
   },
   "devDependencies": {
     "@types/node": "^24.3.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.2"
   }
 }

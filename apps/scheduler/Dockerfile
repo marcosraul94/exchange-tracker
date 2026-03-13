@@ -1,11 +1,10 @@
 FROM node:24-bookworm
 
-RUN apt-get update && \
-    apt-get install -y \
-    cmake && \
-    rm -rf /var/lib/apt/lists/*
-
 WORKDIR /var/task
+
+RUN apt-get update && \
+    apt-get install -y cmake && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
 COPY apps/lib/package.json ./apps/lib/
@@ -14,15 +13,13 @@ COPY apps/scheduler/package.json ./apps/scheduler/
 
 RUN npm ci
 
-RUN npx playwright install chromium --with-deps
-
 COPY apps/lib ./apps/lib
-COPY apps/scraper ./apps/scraper
+COPY apps/scheduler ./apps/scheduler
 
 RUN npm run build -w @repo/lib
-RUN npm run build -w @repo/scraper
+RUN npm run build -w @repo/scheduler
 
-WORKDIR /var/task/apps/scraper
+WORKDIR /var/task/apps/scheduler
 
 ENTRYPOINT ["npx", "aws-lambda-ric"]
 CMD ["./dist/index.handler"]

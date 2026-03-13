@@ -15,11 +15,22 @@ services:
       - dynamodb
     volumes:
       - ./apps/scraper:/var/task/apps/scraper
-      - ./lib:/var/task/lib
+      - ./apps/lib:/var/task/apps/lib
     env_file:
       - .env
-    environment:
-      - NODE_ENV=dev
-      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+    stdin_open: true
+    tty: true
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: ./apps/scheduler/Dockerfile
+    container_name: scheduler
+    entrypoint: /bin/sh
+    volumes:
+      - ./apps/scheduler:/var/task/apps/scheduler
+      - ./apps/lib:/var/task/apps/lib
+    env_file:
+      - .env
     stdin_open: true
     tty: true
